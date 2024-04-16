@@ -1,16 +1,18 @@
 const express = require("express");
 const { NotFoundError } = require("./expressError");
 
+const placesRoutes = require("./routes/places");
 
 const app = express();
 app.use(express.json());
 
-
+app.use("/", places);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
   throw new NotFoundError();
 });
+
 
 /** Generic error handler; anything unhandled goes here. */
 app.use(function (err, req, res, next) {
