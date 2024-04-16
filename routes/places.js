@@ -2,30 +2,25 @@
 
 const express = require("express");
 const router = express.Router();
+require('dotenv').config();
+const { uploadImage, s3, PutObjectCommand } = require("../middleware/uploadImage");
 
-const { uploadImage } = require("../middleware/uploadImage");
+console.log("****************", uploadImage);
 
 // update profile image
 router.post(
   "/uploadImage",
-  uploadImage.single("image"), // our uploadImage middleware
-  (req, res, next) => {
-    res.json({
-      message: 'File uploaded successfully!',
-      fileUrl: req.file.location
+  uploadImage.single('file'), // our uploadImage middleware
+  async (req, res) => {
+    const params = new PutObjectCommand({
+      Bucket: "samsharebnb",
+      //TODO: UUID for a random key
+      Key: req.file.originalname,
+      Body: req.file.buffer,
     });
 
-    // req.file = {
-    //   fieldname, originalname,
-    //   mimetype, size, bucket, key, location
-    // };
+   await s3.send(params)
+   res.send("Uploaded")
+  });
 
-    // location key in req.file holds the s3 url for the image
-    let data = {};
-    if (req.file) {
-      data.image = req.file.location;
-    }
-
-    // HERE IS YOUR LOGIC TO UPDATE THE DATA IN DATABASE
-  }
-);
+  module.exports = router
