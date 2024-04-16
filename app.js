@@ -1,15 +1,11 @@
-import express from "express";
-import { NotFoundError } from "./expressError.js";
-import { upload } from "./helpers/aws";
-// import { add } from "./add.js";
+const express = require("express");
+const { NotFoundError } = require("./expressError");
+
 
 const app = express();
 app.use(express.json());
 
-/** Sample route */
-// app.get("/", function (req, res) {
-//   return res.send(`2 + 3 = ${add(2, 3)}`);
-// });
+
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
@@ -29,8 +25,8 @@ app.use(function (err, req, res, next) {
 });
 
 // Define route for file upload
-app.post('/upload', upload.single('file'), (req, res) => {
-  res.json({ message: 'File uploaded successfully!', fileUrl: req.file.location });
-});
+// app.post('/upload', upload.single('file'), (req, res) => {
+//   res.json({ message: 'File uploaded successfully!', fileUrl: req.file.location });
+// });
 
-export default app;
+module.exports = app;
