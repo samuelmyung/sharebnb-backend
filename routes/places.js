@@ -13,14 +13,14 @@ router.post(
   uploadImage.single('file'), // our uploadImage middleware
   async (req, res) => {
     const params = new PutObjectCommand({
-      Bucket: "samsharebnb",
+      Bucket: "sharebnb-rithm",
       //TODO: UUID for a random key
       Key: req.file.originalname,
       Body: req.file.buffer,
     });
 
-   await s3.send(params)
-   res.send("Uploaded")
+    await s3.send(params);
+    res.send("Uploaded");
   });
 
-  module.exports = router
+module.exports = router;

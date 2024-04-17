@@ -1,11 +1,14 @@
 const multer = require('multer');
 //TODO: need to use version 3 of aws-sdk/cli
-const { S3Client, PutObjectCommand} = require('@aws-sdk/client-s3');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
 require('dotenv').config();
 
+//S3Client communicates with the bucket (we need to specify keys)
+// Multer: middlewae that allows Express to pass multiplatform data
 const s3 = new S3Client({
-  region: 'us-west-1'
-})
+  // region: 'us-west-1'
+  region: 'us-east-2'
+});
 // Set up AWS configuration
 // s3.config.update();
 
