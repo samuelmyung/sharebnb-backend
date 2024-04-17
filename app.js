@@ -1,6 +1,6 @@
 const express = require("express");
 const { NotFoundError } = require("./expressError");
-const placesRoutes = require("./routes/places");
+const propertiesRoutes = require("./routes/properties");
 
 const app = express();
 const cors = require("cors");
@@ -8,7 +8,7 @@ const cors = require("cors");
 app.use(express.json());
 
 app.use(cors({ origin: 'http://localhost:5173' }));
-app.use("/places", placesRoutes);
+app.use("/properties", propertiesRoutes);
 
 /** Handle 404 errors -- this matches everything */
 app.use(function (req, res, next) {
