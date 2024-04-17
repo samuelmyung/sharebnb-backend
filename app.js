@@ -3,8 +3,11 @@ const { NotFoundError } = require("./expressError");
 const placesRoutes = require("./routes/places");
 
 const app = express();
+const cors = require("cors");
+
 app.use(express.json());
 
+app.use(cors({ origin: 'http://localhost:5173' }));
 app.use("/places", placesRoutes);
 
 /** Handle 404 errors -- this matches everything */
