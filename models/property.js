@@ -1,6 +1,7 @@
 "use strict";
 
 const db = require("../db");
+const { sqlForPartialUpdate } = require("../helpers/sql");
 const { BadRequestError, NotFoundError } = require("../expressError");
 
 /** Related functions for properties. */
@@ -17,6 +18,7 @@ class Property {
      * Throws BadRequestError if property already in database.
      * */
   static async create({ title, host_username, image, price_night, description, address }) {
+
     const duplicateCheck = await db.query(`
         SELECT title
         FROM properties
@@ -110,6 +112,77 @@ class Property {
     const property = result.rows[0];
 
     if (!property) throw new NotFoundError(`No property: ${id}`);
+  }
+
+
+  /** Update property data with `data`.
+     *
+     * This is a "partial update" --- it's fine if data doesn't contain all the
+     * fields; this only changes provided ones.
+     *
+     * Data can include: { image, price_night, description }
+     *
+     * Returns { title, host_username, image, price_night, description, address }
+     *
+     * Throws NotFoundError if not found.
+     */
+
+  static async update(id, data) {
+    const { setCols, values } = sqlForPartialUpdate(
+      data,
+      {
+        image: "image",
+        price_night: "price_night",
+        description: "description",
+
+      });
+    const propertyVarIdx = "$" + (values.length + 1);
+
+    const querySql = `
+        UPDATE properties
+        SET ${setCols}
+        WHERE id = ${propertyVarIdx}
+        RETURNING
+                title,
+                host_username,
+                image,
+                price_night,
+                description,
+                address`;
+    const result = await db.query(querySql, [...values, id]);
+    const property = result.rows[0];
+
+    if (!property) throw new NotFoundError(`No company: ${id}`);
+
+    return property;
+  }
+
+
+
+
+  /** Given a check_in date and check_out date, return available properties.
+   *
+   * Returns [{ title, host_username, image, price_night, description, address },...]
+   *
+   **/
+  static async getAvailableProperties(checkin_date, checkout_date) {
+    const propertyRes = await db.query(`
+        SELECT p.id,
+               p.title,
+               p.host_username,
+               p.image,
+               p.price_night,
+               p.description,
+               p.address
+        FROM properties p
+        LEFT JOIN bookings b ON p.id = b.property_id
+        WHERE b.id IS NULL
+            OR (b.checkout_date < $1 OR b.checkin_date > $2)
+        ORDER BY p.id`, [checkin_date, checkout_date]);
+
+    const properties = propertyRes.rows;
+
+    return properties;
   }
 }
 

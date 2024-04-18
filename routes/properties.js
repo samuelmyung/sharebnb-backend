@@ -3,11 +3,10 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const { BadRequestError } = require("../expressError");
-const { ensureHost } = require("../middleware/auth");
 const Property = require("../models/property");
 
 const propertyNewSchema = require("../schemas/propertyNew.json");
-// const propertyUpdateSchema = require("../schemas/propertyUpdate.json");
+const propertyUpdateSchema = require("../schemas/propertyUpdate.json");
 // const propertyFilterSchema = require("../schemas/propertyFilter.json");
 
 //TODO: might not need new
@@ -76,6 +75,52 @@ router.get("/", async function (req, res, next) {
 router.get("/:id", async function (req, res, next) {
   const property = await Property.get(req.params.id);
   return res.json(property);
+});
+
+/** POST /  => Property by property id
+ *   { property:  { title, host_username, image, price_night, description, address }
+  *
+ * Authorization required: none
+ */
+router.patch("/:id", async function (req, res, next) {
+  const validator = jsonschema.validate(
+    req.body,
+    propertyUpdateSchema,
+    { required: true }
+  );
+  if (!validator.valid) {
+    const errs = validator.errors.map(e => e.stack);
+    throw new BadRequestError(errs);
+  }
+
+  const property = await Property.update(req.params.id, req.body);
+  return res.json({ property });
+});
+
+/** GET /  => Given checkin_date and check_out date,
+ * Return all available properties:
+ *   [{ title, host_username, image, price_night, description, address },...]
+  *
+ * Authorization required: none
+ */
+router.get("/:checkin_date/:checkout_date", async function (req, res, next) {
+  console.log("DATES!", req.params);
+  const startDate = req.params.startDate;
+  const endDate = req.params.endDate;
+  // console.log(checkin_date, checkout_date);
+  const properties = await Property.getAvailableProperties(startDate, endDate);
+  return res.json(properties);
+});
+
+
+/** DELETE /  => Property by property id
+ *   { property:  { title, host_username, image, price_night, description, address }
+  *
+ * Authorization required: none
+ */
+router.delete("/:id", async function (req, res, next) {
+  await Property.remove(req.params.id);
+  return res.json({ deleted: req.params.id });
 });
 
 module.exports = router;
