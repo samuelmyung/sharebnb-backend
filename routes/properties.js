@@ -58,4 +58,24 @@ router.post("/", async function (req, res, next) {
   return res.status(201).json({ property });
 });
 
+/** GET /  =>
+ *   { properties: [ { title, host_username, image, price_night, description, address }, ...] }
+  *
+ * Authorization required: none
+ */
+router.get("/", async function (req, res, next) {
+  const properties = await Property.getAll();
+  return res.json({ properties });
+});
+
+/** GET /  => Property by property id
+ *   { property:  { title, host_username, image, price_night, description, address }
+  *
+ * Authorization required: none
+ */
+router.get("/:id", async function (req, res, next) {
+  const property = await Property.get(req.params.id);
+  return res.json(property);
+});
+
 module.exports = router;
