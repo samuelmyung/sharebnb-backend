@@ -120,7 +120,7 @@ class Property {
      * This is a "partial update" --- it's fine if data doesn't contain all the
      * fields; this only changes provided ones.
      *
-     * Data can include: { image, price_night, description }
+     * Data can include: { "title", "image", "price_night", "description" }
      *
      * Returns { title, host_username, image, price_night, description, address }
      *
@@ -128,14 +128,16 @@ class Property {
      */
 
   static async update(id, data) {
+    const allowedColumns = ["title", "image", "price_night", "description"]
     const { setCols, values } = sqlForPartialUpdate(
       data,
       {
+        title: "title",
         image: "image",
         price_night: "price_night",
         description: "description",
 
-      });
+      }, allowedColumns);
     const propertyVarIdx = "$" + (values.length + 1);
 
     const querySql = `
@@ -152,7 +154,7 @@ class Property {
     const result = await db.query(querySql, [...values, id]);
     const property = result.rows[0];
 
-    if (!property) throw new NotFoundError(`No company: ${id}`);
+    if (!property) throw new NotFoundError(`No property`);
 
     return property;
   }

@@ -3,7 +3,7 @@ CREATE TABLE users (
   password TEXT NOT NULL,
   first_name TEXT NOT NULL,
   last_name TEXT NOT NULL,
-  email TEXT NOT NULL
+  email TEXT UNIQUE NOT NULL
     CHECK (position('@' IN email) > 1),
   is_host BOOLEAN NOT NULL DEFAULT FALSE
 );
@@ -25,9 +25,9 @@ CREATE TABLE bookings (
     REFERENCES users ON DELETE CASCADE,
   property_id INTEGER NOT NULL
     REFERENCES properties ON DELETE CASCADE,
+  date_booked DATE DEFAULT CURRENT_DATE,
   checkin_date DATE NOT NULL,
-  checkout_date DATE NOT NULL,
-  total_price INTEGER NOT NULL
+  checkout_date DATE NOT NULL
 );
 
 CREATE TABLE messages (

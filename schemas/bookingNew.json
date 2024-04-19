@@ -13,19 +13,15 @@
     },
     "checkin_date": {
       "type": "string",
-      "format": "date-time"
+      "format": "date"
     },
     "checkout_date": {
       "type": "string",
-      "format": "date-time"
+      "format": "date"
     },
     "date_booked": {
       "type": "string",
-      "format": "date-time"
-    },
-    "price_night": {
-      "type": "integer",
-      "minimum": 1
+      "format": "date"
     }
   },
   "additionalProperties": false,
@@ -33,8 +29,6 @@
     "guest_username",
     "property_id",
     "checkin_date",
-    "checkout_date",
-    "date_booked",
-    "price_night"
+    "checkout_date"
   ]
 }

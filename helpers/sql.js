@@ -12,13 +12,15 @@ const { BadRequestError } = require("../expressError");
     }
 */
 
-function sqlForPartialUpdate(dataToUpdate, jsToSql) {
+function sqlForPartialUpdate(dataToUpdate, jsToSql, allowedColumns) {
   // {firstName: "Aliya", age: 32} => ["firstName", "age"]
   const keys = Object.keys(dataToUpdate);
   if (keys.length === 0) throw new BadRequestError("No data");
 
+  const filteredKeys = keys.filter(colName => allowedColumns.includes(colName));
+
   // ["firstName", "age"] => ['"first_name"=$1', '"age"=$2']
-  const cols = keys.map((colName, idx) =>
+  const cols = filteredKeys.map((colName, idx) =>
     `"${jsToSql[colName] || colName}"=$${idx + 1}`,
   );
 
@@ -26,7 +28,7 @@ function sqlForPartialUpdate(dataToUpdate, jsToSql) {
     // '"first_name"=$1, "age"=$2'
     setCols: cols.join(", "),
     // ["Aliya", 32]
-    values: Object.values(dataToUpdate),
+    values: filteredKeys.map(key => dataToUpdate[key]),
   };
 }
 
