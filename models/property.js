@@ -128,7 +128,7 @@ class Property {
      */
 
   static async update(id, data) {
-    const allowedColumns = ["title", "image", "price_night", "description"]
+    const allowedColumns = ["title", "image", "price_night", "description"];
     const { setCols, values } = sqlForPartialUpdate(
       data,
       {
@@ -168,6 +168,17 @@ class Property {
    *
    **/
   static async getAvailableProperties(checkin_date, checkout_date) {
+    const bookingCheck = await db.query(`
+        SELECT *
+        FROM bookings
+        WHERE property_id = $1
+          AND ((checkin_date <= $2 AND checkout_date >= $2)
+               OR (checkin_date <= $3 AND checkout_date >= $3))
+    `, [data.property_id, data.checkin_date, data.checkout_date]);
+
+    if (bookingCheck.rows.length > 0)
+      throw new BadRequestError(`Booking conflicts with existing bookings`);
+
     const propertyRes = await db.query(`
         SELECT p.id,
                p.title,
@@ -179,7 +190,7 @@ class Property {
         FROM properties p
         LEFT JOIN bookings b ON p.id = b.property_id
         WHERE b.id IS NULL
-            OR (b.checkout_date < $1 OR b.checkin_date > $2)
+
         ORDER BY p.id`, [checkin_date, checkout_date]);
 
     const properties = propertyRes.rows;
@@ -188,5 +199,6 @@ class Property {
   }
 }
 
+// OR (b.checkout_date < $1 OR b.checkin_date > $2)
 
 module.exports = Property;

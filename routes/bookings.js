@@ -8,7 +8,7 @@ const Booking = require("../models/booking");
 
 const bookingNewSchema = require("../schemas/bookingNew.json");
 
-const router = new express.Router();
+
 require('dotenv').config();
 
 // const bookingUpdateSchema = require("../schemas/bookingUpdate.json");
@@ -90,4 +90,4 @@ router.delete("/:username/:id", ensureCorrectUserBook, async function (req, res,
 
 module.exports = router;
 
-module.exports = router;
+

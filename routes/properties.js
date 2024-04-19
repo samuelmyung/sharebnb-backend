@@ -3,7 +3,7 @@
 const express = require("express");
 const jsonschema = require("jsonschema");
 const { BadRequestError } = require("../expressError");
-const { ensureHost, ensureCorrectHost } = require("../middleware/auth");
+
 const Property = require("../models/property");
 
 const propertyNewSchema = require("../schemas/propertyNew.json");
@@ -43,7 +43,7 @@ router.post(
  * Authorization required: host
  */
 
-router.post("/", ensureHost, async function (req, res, next) {
+router.post("/", async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     propertyNewSchema,
@@ -83,7 +83,7 @@ router.get("/:id", async function (req, res, next) {
   *
  * Authorization required: Correct host
  */
-router.patch("/:username/:id", ensureCorrectHost, async function (req, res, next) {
+router.patch("/:username/:id", async function (req, res, next) {
   const validator = jsonschema.validate(
     req.body,
     propertyUpdateSchema,
@@ -119,7 +119,7 @@ router.get("/:checkin_date/:checkout_date", async function (req, res, next) {
   *
  * Authorization required: none
  */
-router.delete("/:username/:id", ensureCorrectHost, async function (req, res, next) {
+router.delete("/:username/:id", async function (req, res, next) {
   await Property.remove(req.params.id);
   return res.json({ deleted: req.params.id });
 });

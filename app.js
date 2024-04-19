@@ -4,7 +4,6 @@ const propertiesRoutes = require("./routes/properties");
 const usersRoutes = require("./routes/users");
 const bookingsRoutes = require("./routes/bookings");
 const authRoutes = require("./routes/auth");
-const bookingsRoutes = require("./routes/bookings");
 const { authenticateJWT } = require("./middleware/auth");
 
 
@@ -13,9 +12,9 @@ const cors = require("cors");
 
 app.use(express.json());
 
-app.use(cors({ origin: 'http://localhost:5175' }));
+app.use(cors({ origin: 'http://localhost:5174' }));
 app.use(authenticateJWT);
-app.use(cors({ origin: 'http://localhost:5173' }));
+// app.use(cors({ origin: 'http://localhost:5173' }));
 app.use("/properties", propertiesRoutes);
 app.use("/users", usersRoutes);
 app.use("/bookings", bookingsRoutes);

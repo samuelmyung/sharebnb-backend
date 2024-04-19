@@ -48,32 +48,32 @@ function ensureLoggedIn(req, res, next) {
  * If not, raises Unauthorized.
  */
 
-function ensureHost(req, res, next) {
-  if (res.locals.user?.username && res.locals.user?.isHost === true) return next();
-  throw new UnauthorizedError();
-}
+// function ensureHost(req, res, next) {
+//   if (res.locals.user?.username && res.locals.user?.isHost === true) return next();
+//   throw new UnauthorizedError();
+// }
 
 /** Middleware to use when they must be logged in and the correct host.
  *
  * If not, raises Unauthorized.
  */
 
-async function ensureCorrectHost(req, res, next) {
-  const currentUser = res.locals.user?.username;
-  // if (
-  //   currentUser && (currentUser === req.params.username
-  //     || res.locals.user?.isHost === true))
-  return next();
-  //throw new UnauthorizedError();
-  const propertyId = req.params.id;
-  const property = await Property.get(propertyId);
-  const hostUsername = property.host_username;
+// async function ensureCorrectHost(req, res, next) {
+//   const currentUser = res.locals.user?.username;
+//   // if (
+//   //   currentUser && (currentUser === req.params.username
+//   //     || res.locals.user?.isHost === true))
+//   return next();
+//   //throw new UnauthorizedError();
+//   const propertyId = req.params.id;
+//   const property = await Property.get(propertyId);
+//   const hostUsername = property.host_username;
 
-  if (
-    currentUser && (currentUser === hostUsername && currentUser === req.params.username))
-    return next();
-  throw new UnauthorizedError();
-}
+//   if (
+//     currentUser && (currentUser === hostUsername && currentUser === req.params.username))
+//     return next();
+//   throw new UnauthorizedError();
+// }
 
 /** Middleware to use when they must be logged in and the correct user.
  *
@@ -107,8 +107,6 @@ async function ensureCorrectUserBook(req, res, next) {
 module.exports = {
   authenticateJWT,
   ensureLoggedIn,
-  ensureHost,
-  ensureCorrectHost,
   ensureCorrectUser,
   ensureCorrectUserBook
 };

@@ -12,23 +12,15 @@
       "type": "integer"
     },
     "checkin_date": {
-      "type": "string",
-      "format": "date"
+      "type": "string"
     },
     "checkout_date": {
-      "type": "string",
-      "format": "date"
+      "type": "string"
     },
     "date_booked": {
-      "type": "string",
-      "format": "date"
+      "type": "string"
     }
   },
-  "additionalProperties": false,
-  "required": [
-    "guest_username",
-    "property_id",
-    "checkin_date",
-    "checkout_date"
-  ]
+  "additionalProperties": true,
+  "required": ["guest_username", "property_id", "checkin_date", "checkout_date"]
 }
