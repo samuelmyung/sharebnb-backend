@@ -98,25 +98,6 @@ class User {
   return user;
 }
 
-//TODO: Most likely get rid of
-/** Find all users.
- *
- * Returns [{ username, first_name, last_name, email, is_host }, ...]
- **/
-
-static async findAll() {
-  const result = await db.query(`
-      SELECT username,
-             first_name AS "firstName",
-             last_name  AS "lastName",
-             email,
-             is_host   AS "isHost"
-      FROM users
-      ORDER BY username`,
-  );
-
-  return result.rows;
-}
 
 /** Given a username, return data about user.
  *

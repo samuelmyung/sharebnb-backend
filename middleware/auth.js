@@ -5,6 +5,9 @@
 const jwt = require("jsonwebtoken");
 const { SECRET_KEY } = require("../config");
 const { UnauthorizedError } = require("../expressError");
+const Property = require("../models/property");
+const Booking = require("../models/booking");
+
 
 
 /** Middleware: Authenticate user.
@@ -50,16 +53,47 @@ function ensureHost(req, res, next) {
   throw new UnauthorizedError();
 }
 
-/** Middleware to use when they must be logged in and current user or a host.
+/** Middleware to use when they must be logged in and the correct host.
  *
  * If not, raises Unauthorized.
  */
 
-function ensureCorrectUserOrHost(req, res, next) {
+async function ensureCorrectHost(req, res, next) {
   const currentUser = res.locals.user?.username;
+  const propertyId = req.params.id;
+  const property = await Property.get(propertyId);
+  const hostUsername = property.host_username;
+
   if (
-    currentUser && (currentUser === req.params.username
-      || res.locals.user?.isHost === true))
+    currentUser && (currentUser === hostUsername && currentUser === req.params.username))
+    return next();
+  throw new UnauthorizedError();
+}
+
+/** Middleware to use when they must be logged in and the correct user.
+ *
+ * If not, raises Unauthorized.
+ */
+
+async function ensureCorrectUser(req, res, next) {
+  const currentUser = res.locals.user?.username;
+
+  if (
+    currentUser && (currentUser === req.params.username))
+    return next();
+  throw new UnauthorizedError();
+}
+
+async function ensureCorrectUserBook(req, res, next) {
+  const currentUser = res.locals.user?.username;
+  const bookingId = req.params.bookingId;
+  console.log("Bookingid", bookingId)
+
+  const booking = await Booking.get(bookingId);
+  const guestUsername = booking.guest_username;
+
+  if (
+    currentUser && (currentUser === req.params.username && currentUser === guestUsername))
     return next();
   throw new UnauthorizedError();
 }
@@ -69,5 +103,7 @@ module.exports = {
   authenticateJWT,
   ensureLoggedIn,
   ensureHost,
-  ensureCorrectUserOrHost,
+  ensureCorrectHost,
+  ensureCorrectUser,
+  ensureCorrectUserBook
 };
