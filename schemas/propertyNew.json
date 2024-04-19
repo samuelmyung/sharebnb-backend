@@ -5,8 +5,7 @@
   "properties": {
     "title": {
       "type": "string",
-      "minLength": 1,
-      "maxLength": 30
+      "minLength": 1
     },
     "host_username": {
       "type": "string",
@@ -14,8 +13,7 @@
       "maxLength": 25
     },
     "image": {
-      "type": "string",
-      "format": "uri"
+      "type": "string"
     },
     "price_night": {
       "type": "integer",

@@ -20,7 +20,9 @@ const { uploadImage, s3, PutObjectCommand } = require("../middleware/uploadImage
 router.post(
   "/uploadImage",
   uploadImage.single('file'), // our uploadImage middleware
+
   async (req, res) => {
+    console.log("file from routes: ", req.file);
     const params = new PutObjectCommand({
       Bucket: "sharebnb-rithm",
       //TODO: UUID for a random key
@@ -30,6 +32,7 @@ router.post(
 
     await s3.send(params);
     res.send("Uploaded");
+
   });
 
 

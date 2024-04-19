@@ -5,8 +5,13 @@ const { BadRequestError } = require("../expressError");
 const { ensureHost } = require("../middleware/auth");
 const Booking = require("../models/booking");
 const bookingNewSchema = require("../schemas/bookingNew.json");
+
+const router = new express.Router();
+require('dotenv').config();
+
 // const bookingUpdateSchema = require("../schemas/bookingUpdate.json");
 // const bookingFilterSchema = require("../schemas/bookingFilter.json");
+
 /** POST / { booking } =>  { booking }
  *
  * booking should be { guest_username, property_id, checkin_date, checkout_date, total_price }
@@ -38,3 +43,5 @@ router.delete("/:id", async function (req, res, next) {
   await Booking.remove(req.params.id);
   return res.json({ deleted: req.params.id });
 });
+
+module.exports = router;

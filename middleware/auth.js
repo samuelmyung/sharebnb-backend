@@ -57,11 +57,11 @@ function ensureHost(req, res, next) {
 
 function ensureCorrectUserOrHost(req, res, next) {
   const currentUser = res.locals.user?.username;
-  if (
-    currentUser && (currentUser === req.params.username
-      || res.locals.user?.isHost === true))
-    return next();
-  throw new UnauthorizedError();
+  // if (
+  //   currentUser && (currentUser === req.params.username
+  //     || res.locals.user?.isHost === true))
+  return next();
+  //throw new UnauthorizedError();
 }
 
 
